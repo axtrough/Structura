@@ -9,14 +9,10 @@ import net.raccoon.will.structura.api.gui.GuiGroup;
 //made by will >:3
 
 public abstract class GuiElement {
-    public int width;
-    public int height;
-    protected int offsetX;
-    protected int offsetY;
+    public int width, height;
+    protected int offsetX, offsetY;
     protected Anchor anchor;
-    protected float scale = 1.0f;
-    protected float alpha = 1.0f;
-    protected float targetAlpha = 1.0f;
+    protected float alpha, targetAlpha, scale = 1.0f;
     protected boolean visible = true;
     protected ElementAnchor elementAnchor = ElementAnchor.TOP_LEFT;
     public GuiGroup parent = null;
@@ -67,11 +63,21 @@ public abstract class GuiElement {
         return parent != null;
     }
 
-    public float getAlpha() { return alpha; }
-    public int getOffsetX() { return offsetX; }
-    public int getOffsetY() { return offsetY; }
-    public int getOriginalOffsetX() { return originalOffsetX; }
-    public int getOriginalOffsetY() { return originalOffsetY; }
+    public float getAlpha() {
+        return alpha;
+    }
+    public int getOffsetX() {
+        return offsetX;
+    }
+    public int getOffsetY() {
+        return offsetY;
+    }
+    public int getOriginalOffsetX() {
+        return originalOffsetX;
+    }
+    public int getOriginalOffsetY() {
+        return originalOffsetY;
+    }
 
     public void resetScale() { this.scale = originalScale; }
     public void resetSize() { this.width = originalWidth; this.height = originalHeight; }
@@ -110,7 +116,6 @@ public abstract class GuiElement {
 
     protected abstract void draw(GuiGraphics graphics);
 
-    //don't talk to me about it.
     protected int calculateTopLeftX(int screenWidth) {
         int anchorX = switch (anchor) {
             case TOP_LEFT, CENTER_LEFT, BOTTOM_LEFT -> offsetX;
@@ -118,15 +123,14 @@ public abstract class GuiElement {
             case TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT -> screenWidth - offsetX;
         };
 
-        int anchorOffsetX = switch (anchor) {
+        int elementAnchorAdjustmentX = switch (elementAnchor) {
             case TOP_LEFT, CENTER_LEFT, BOTTOM_LEFT -> 0;
             case TOP_CENTER, CENTER, BOTTOM_CENTER -> (int) (width * scale / 2f);
             case TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT -> (int) (width * scale);
         };
 
-        return anchorX - anchorOffsetX;
+        return anchorX - elementAnchorAdjustmentX;
     }
-
 
     protected int calculateTopLeftY(int screenHeight) {
         int anchorY = switch (anchor) {
@@ -135,12 +139,12 @@ public abstract class GuiElement {
             case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> screenHeight - offsetY;
         };
 
-        int anchorOffsetY = switch (anchor) {
+        int elementAnchorAdjustmentY = switch (elementAnchor) {
             case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> 0;
             case CENTER_LEFT, CENTER, CENTER_RIGHT -> (int) (height * scale / 2f);
             case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> (int) (height * scale);
         };
 
-        return anchorY - anchorOffsetY;
+        return anchorY - elementAnchorAdjustmentY;
     }
 }
