@@ -1,40 +1,40 @@
-package net.raccoon.will.structura.api.gui;
+package net.raccoon.will.structura.api.gui.layout;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.raccoon.will.structura.api.gui.elements.GuiElement;
+import net.raccoon.will.structura.api.gui.element.GuiElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiGroup extends GuiElement {
+public class GuiContainer extends GuiElement {
     private final List<GuiElement> children = new ArrayList<>();
     private Layout layout = Layout.HORIZONTAL;
     private int spacing = 2;
 
-    public GuiGroup(Anchor anchor, int offsetX, int offsetY) {
+    public GuiContainer(Anchor anchor, int offsetX, int offsetY) {
         super(0, 0, anchor, offsetX, offsetY);
     }
 
-    public GuiGroup add(GuiElement element) {
+    public GuiContainer add(GuiElement element) {
         element.parent = this;
         children.add(element);
         updateChildrenOffsets();
         return this;
     }
 
-    public GuiGroup setLayout(Layout layout) {
+    public GuiContainer setLayout(Layout layout) {
         this.layout = layout;
         updateChildrenOffsets();
         return this;
     }
 
-    public GuiGroup setSpacing(int spacing) {
+    public GuiContainer setSpacing(int spacing) {
         this.spacing = spacing;
         updateChildrenOffsets();
         return this;
     }
 
-    public GuiGroup setGroupAnchor(ElementAnchor elementAnchor) {
+    public GuiContainer setGroupAnchor(ElementAnchor elementAnchor) {
         this.elementAnchor = elementAnchor;
         return this;
     }
@@ -105,7 +105,7 @@ public class GuiGroup extends GuiElement {
         }
 
         for (GuiElement child : children) {
-            child.render(graphics, width, height, null);
+            child.render(graphics, width, height);
         }
     }
 }

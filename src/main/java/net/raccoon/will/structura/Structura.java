@@ -1,7 +1,6 @@
 package net.raccoon.will.structura;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
-import net.raccoon.will.structura.api.gui.elements.GuiElement;
+import net.raccoon.will.structura.api.gui.element.GuiElement;
 import org.slf4j.Logger;
 
 @Mod(Structura.MODID)
@@ -25,8 +24,8 @@ public class Structura {
     public static final String MODID = "structura";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final ResourceKey<Registry<GuiElement>> GUI_ELEMENTS = ResourceKey.createRegistryKey(Structura.resLoc("gui_elements"));
-    public static final Registry<GuiElement> GUI_ELEMENT_REGISTRY = new RegistryBuilder<>(GUI_ELEMENTS)
+    public static final ResourceKey<Registry<GuiElement>> GUI_KEY = ResourceKey.createRegistryKey(Structura.resLoc("gui_element"));
+    public static final Registry<GuiElement> GUI_ELEMENTS = new RegistryBuilder<>(GUI_KEY)
             .sync(true)
             .create();
 
@@ -45,7 +44,7 @@ public class Structura {
 
     @SubscribeEvent
     public static void registerRegistries(NewRegistryEvent event) {
-        event.register(Structura.GUI_ELEMENT_REGISTRY);
+        event.register(Structura.GUI_ELEMENTS);
     }
 
     @SubscribeEvent

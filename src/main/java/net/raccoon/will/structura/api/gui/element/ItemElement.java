@@ -1,8 +1,8 @@
-package net.raccoon.will.structura.api.gui.elements;
+package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.raccoon.will.structura.api.gui.Anchor;
+import net.raccoon.will.structura.api.gui.layout.Anchor;
 
 public class ItemElement extends GuiElement {
     private ItemStack item;

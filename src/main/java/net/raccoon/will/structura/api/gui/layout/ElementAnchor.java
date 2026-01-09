@@ -1,4 +1,4 @@
-package net.raccoon.will.structura.api.gui;
+package net.raccoon.will.structura.api.gui.layout;
 
 public enum ElementAnchor {
     TOP_LEFT, TOP_CENTER, TOP_RIGHT,

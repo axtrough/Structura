@@ -1,14 +1,13 @@
 package net.raccoon.will.structura.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.raccoon.will.structura.api.gui.elements.GuiElement;
+import net.raccoon.will.structura.api.gui.element.GuiElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuiManager {
-    static final List<GuiElement> ELEMENTS = new ArrayList<>();
+    private static final List<GuiElement> ELEMENTS = new ArrayList<>();
     public static boolean DEBUG_RENDER_TIME = false;
 
     public static void add(GuiElement element) {
@@ -23,14 +22,19 @@ public class GuiManager {
         ELEMENTS.clear();
     }
 
-    public static void render(GuiGraphics guiGraphics, int screenWidth, int screenHeight, RenderGuiEvent.Pre event) {
+    public static void updateAll() {
+        for (GuiElement element : ELEMENTS) {
+            element.update();
+        }
+    }
+
+    public static void render(GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
         long start = 0;
         if (DEBUG_RENDER_TIME) start = System.nanoTime();
 
-        // actual rendering
         for (GuiElement element : ELEMENTS) {
             if (!element.isChildElement()) {
-                element.render(guiGraphics, screenWidth, screenHeight, event);
+                element.render(guiGraphics, screenWidth, screenHeight);
             }
         }
 

@@ -1,9 +1,9 @@
-package net.raccoon.will.structura.api.gui.elements;
+package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.raccoon.will.structura.api.gui.Anchor;
+import net.raccoon.will.structura.api.gui.layout.Anchor;
 
 public class TextElement extends GuiElement {
     private final Component originalText;

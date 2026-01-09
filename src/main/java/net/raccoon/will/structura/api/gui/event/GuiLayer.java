@@ -12,19 +12,23 @@ import net.raccoon.will.structura.Structura;
 import net.raccoon.will.structura.client.gui.GuiManager;
 
 @EventBusSubscriber(modid = Structura.MODID, value = Dist.CLIENT)
-public class GuiEvents {
+public final class GuiLayer {
+
+    private GuiLayer() {}
 
     @SubscribeEvent
-    public static void onRenderGenericGui(RenderGuiEvent.Pre event) {
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-        Minecraft minecraft = Minecraft.getInstance();
-        Window window = minecraft.getWindow();
+    public static void onRender(RenderGuiEvent.Pre event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+
+        Window window = mc.getWindow();
+        GuiGraphics graphics = event.getGuiGraphics();
+
         int screenWidth = window.getGuiScaledWidth();
         int screenHeight = window.getGuiScaledHeight();
-        boolean debug = Screen.hasControlDown();
 
-
-        GuiManager.render(guiGraphics, screenWidth, screenHeight, event);
+        GuiManager.updateAll();
+        GuiManager.render(graphics, screenWidth, screenHeight);
     }
 }
 

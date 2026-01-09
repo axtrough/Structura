@@ -1,22 +1,21 @@
-package net.raccoon.will.structura.api.gui.elements;
+package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.raccoon.will.structura.api.gui.Anchor;
-import net.raccoon.will.structura.api.gui.ElementAnchor;
-import net.raccoon.will.structura.api.gui.GuiGroup;
+import net.raccoon.will.structura.api.gui.layout.Anchor;
+import net.raccoon.will.structura.api.gui.layout.ElementAnchor;
+import net.raccoon.will.structura.api.gui.layout.GuiContainer;
 
 //made by will >:3
 
 public abstract class GuiElement {
     public int width, height;
     protected int offsetX, offsetY;
-    protected Anchor anchor;
-    protected float alpha, targetAlpha, scale = 1.0f;
+    protected final Anchor anchor;
+    protected float alpha, scale = 1.0f;
     protected boolean visible = true;
     protected ElementAnchor elementAnchor = ElementAnchor.TOP_LEFT;
-    public GuiGroup parent = null;
-    protected boolean debug = true;
+    public GuiContainer parent = null;
+    protected boolean debug = false;
 
     protected final int originalWidth, originalHeight, originalOffsetX, originalOffsetY;
     protected final float originalScale;
@@ -66,36 +65,46 @@ public abstract class GuiElement {
     public float getAlpha() {
         return alpha;
     }
+
     public int getOffsetX() {
         return offsetX;
     }
+
     public int getOffsetY() {
         return offsetY;
     }
+
     public int getOriginalOffsetX() {
         return originalOffsetX;
     }
+
     public int getOriginalOffsetY() {
         return originalOffsetY;
     }
 
-    public void resetScale() { this.scale = originalScale; }
-    public void resetSize() { this.width = originalWidth; this.height = originalHeight; }
-    public void resetOffset() { this.offsetX = originalOffsetX; this.offsetY = originalOffsetY; }
-    public void resetAll() { resetOffset(); resetScale(); resetSize(); }
-
-    public void fadeTo(float target, float fadeDurationSeconds, float deltaSeconds) {
-        this.targetAlpha = target;
-        float speed = deltaSeconds / fadeDurationSeconds;
-        this.alpha += (targetAlpha - this.alpha) * speed;
-        if (Math.abs(targetAlpha - this.alpha) < 0.01f) {
-            this.alpha = targetAlpha;
-        }
+    public void resetScale() {
+        this.scale = originalScale;
     }
 
-    public void render(GuiGraphics graphics, int screenWidth, int screenHeight, RenderGuiEvent.Pre event) {
-        if (!visible) return;
+    public void resetSize() {
+        this.width = originalWidth; this.height = originalHeight;
+    }
+
+    public void resetOffset() {
+        this.offsetX = originalOffsetX; this.offsetY = originalOffsetY;
+    }
+
+    public void resetAll() {
+        resetOffset(); resetScale(); resetSize();
+    }
+
+    public void update() {
         updateSize();
+    }
+
+    public void render(GuiGraphics graphics, int screenWidth, int screenHeight) {
+        if (!visible) return;
+
         int x = calculateTopLeftX(screenWidth);
         int y = calculateTopLeftY(screenHeight);
 
@@ -104,13 +113,13 @@ public abstract class GuiElement {
         graphics.pose().translate(x, y, 0);
         graphics.pose().scale(scale, scale, 1);
 
-        graphics.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         draw(graphics);
 
         if (debug) {
             graphics.fill(0, 0, width, height, 0x40FF0000);
             graphics.renderOutline(0, 0, width, height, 0xFFFF0000);
         }
+
         graphics.pose().popPose();
     }
 
