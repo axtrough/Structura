@@ -22,12 +22,14 @@ public class GuiManager {
         ELEMENTS.clear();
     }
 
+    //updates all the elements ofc
     public static void updateAll() {
         for (GuiElement element : ELEMENTS) {
             element.update();
         }
     }
 
+    // renders all the elements. also for debug things
     public static void render(GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
         long start = 0;
         if (DEBUG_RENDER_TIME) start = System.nanoTime();

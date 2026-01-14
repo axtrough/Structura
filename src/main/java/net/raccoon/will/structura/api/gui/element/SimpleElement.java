@@ -4,6 +4,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
 
+/**
+ * Simple element to render images and so on
+ */
+
 public class SimpleElement extends GuiElement {
     protected ResourceLocation texture;
     protected final ResourceLocation originalTexture;

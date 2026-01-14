@@ -5,6 +5,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
 
+/**
+ * Pretty self-explanatory.
+ * Make an element with text
+ */
+
 public class TextElement extends GuiElement {
     private final Component originalText;
     private Component text;
