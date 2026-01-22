@@ -13,12 +13,26 @@ public class ItemElement extends GuiElement {
 
     public ItemElement(ItemStack stack, int width, int height, Anchor anchor, int offsetX, int offsetY) {
         super(width, height, anchor, offsetX, offsetY);
-        setItem(stack);
-        this.originalItem = stack;
+        ItemStack safe = stack == null ? ItemStack.EMPTY : stack.copy();
+        this.item = safe;
+        this.originalItem = safe.copy();
+    }
+
+    //Constructor if no initial item is wanted. May be used if you assign item later in Update.
+    public ItemElement(int width, int height, Anchor anchor, int offsetX, int offsetY) {
+        this(ItemStack.EMPTY, width, height, anchor, offsetX, offsetY);
+    }
+
+    public void setItem(ItemStack stack) {
+        ItemStack safe = stack == null ? ItemStack.EMPTY : stack.copy();
+
+        if (!ItemStack.matches(this.item, safe)) {
+            this.item = safe.copy();
+        }
     }
 
     private void resetItem() {
-        this.item = originalItem;
+        this.item = originalItem.copy();
     }
 
     @Override
@@ -27,15 +41,9 @@ public class ItemElement extends GuiElement {
         resetItem();
     }
 
-    public void setItem(ItemStack stack) {
-        if (this.item == null || !ItemStack.matches(this.item, stack)) {
-            this.item = stack != null ? stack.copy() : ItemStack.EMPTY;
-        }
-    }
-
     @Override
     protected void draw(GuiGraphics graphics) {
-        if (item != null && !item.isEmpty()) {
+        if (!item.isEmpty()) {
             graphics.renderItem(item, 0, 0);
         }
     }

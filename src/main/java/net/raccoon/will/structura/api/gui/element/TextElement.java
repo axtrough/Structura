@@ -31,6 +31,17 @@ public class TextElement extends GuiElement {
         setText(text);
     }
 
+    //Constructor if no initial text is wanted. May be used if you assign text later in Update.
+    public TextElement(int color, boolean shadow, Anchor anchor, int offsetX, int offsetY) {
+        super(0, 0, anchor, offsetX, offsetY);
+        this.originalText = Component.empty();
+        this.text = Component.empty();
+        this.originalColor = color;
+        this.color = color;
+        this.shadow = shadow;
+        setText(text);
+    }
+
     public void resetText() {
         setText(originalText);
     }
@@ -54,7 +65,9 @@ public class TextElement extends GuiElement {
     }
 
     public void setColor(int color) {
-        this.color = color;
+        if (this.color != color) {
+            this.color = color;
+        }
     }
 
     public void setShadow(boolean shadow) {
