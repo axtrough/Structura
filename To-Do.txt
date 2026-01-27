@@ -1,0 +1,4 @@
+- Get all commands working for all different things they can do. Make it so if textElement then it can only use textElement abilities and so on.
+
+- Add more helper stuff to GuiElement to make life easier
+
