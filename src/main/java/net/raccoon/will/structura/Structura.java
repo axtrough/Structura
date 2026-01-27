@@ -19,6 +19,10 @@ public class Structura {
         return Identifier.fromNamespaceAndPath(Structura.MODID, name);
     }
 
+    public static Identifier texLoc(String name) {
+        return Identifier.fromNamespaceAndPath(Structura.MODID, "textures/" + name);
+    }
+
     public Structura(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
     }

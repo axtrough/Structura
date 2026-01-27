@@ -31,13 +31,12 @@ public class ExampleHud extends BaseHud {
                         0xeb34e5, false, Anchor.CENTER, 0, 0));
 
         basicElement = addElement(
-                new BasicElement("basic_element", Structura.resLoc("textures/gui/basic_element.png"),
+                new BasicElement("basic_element", Structura.texLoc("gui/basic_element.png"),
                         128, 128, 128, 128, Anchor.BOTTOM_RIGHT, 8, 8));
 
 //        progressElement = addElement(
-//                new ProgressElement("progress_element", Structura.resLoc("gui/progress_example.png"),
+//                new ProgressElement("progress_element", Structura.texLoc("gui/progress_example.png"),
 //                        128, 128, 64, 16, 0, 0, 0, 16, Anchor.TOP_RIGHT, 16, 16));
-
     }
 
     @Override
