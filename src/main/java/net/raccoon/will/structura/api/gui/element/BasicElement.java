@@ -1,7 +1,8 @@
 package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
 
 /**
@@ -9,12 +10,12 @@ import net.raccoon.will.structura.api.gui.layout.Anchor;
  */
 
 public class BasicElement extends GuiElement {
-    protected ResourceLocation texture;
-    protected final ResourceLocation originalTexture;
+    protected Identifier texture;
+    protected final Identifier originalTexture;
     protected final int texWidth, texHeight;
 
-    public BasicElement(ResourceLocation texture, int width, int height, int texWidth, int texHeight, Anchor anchor, int offsetX, int offsetY) {
-        super(width, height, anchor, offsetX, offsetY);
+    public BasicElement(String id, Identifier texture, int width, int height, int texWidth, int texHeight, Anchor anchor, int offsetX, int offsetY) {
+        super(id, width, height, anchor, offsetX, offsetY);
         this.texture = texture;
         this.originalTexture = texture;
         this.texWidth = texWidth;
@@ -22,8 +23,8 @@ public class BasicElement extends GuiElement {
     }
 
     //Constructor if no initial image is wanted. May be used if you assign image later in Update.
-    public BasicElement(int width, int height, int texWidth, int texHeight, Anchor anchor, int offsetX, int offsetY) {
-        super(width, height, anchor, offsetX, offsetY);
+    public BasicElement(String id, int width, int height, int texWidth, int texHeight, Anchor anchor, int offsetX, int offsetY) {
+        super(id, width, height, anchor, offsetX, offsetY);
         this.texture = null;
         this.originalTexture = null;
         this.texWidth = texWidth;
@@ -34,7 +35,7 @@ public class BasicElement extends GuiElement {
         this.texture = originalTexture;
     }
 
-    public void setTexture(ResourceLocation texture) {
+    public void setTexture(Identifier texture) {
         if (!texture.equals(this.texture)) {
             this.texture = texture;
         }
@@ -43,6 +44,6 @@ public class BasicElement extends GuiElement {
     @Override
     protected void draw(GuiGraphics graphics) {
         if (texture == null) return;
-        graphics.blit(texture, 0, 0, 0, 0, width, height, texWidth, texHeight);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, 0, 0, 0, 0, width, height, texWidth, texHeight);
     }
 }

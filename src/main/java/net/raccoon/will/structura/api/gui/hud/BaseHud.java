@@ -6,14 +6,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.raccoon.will.structura.api.gui.element.GuiElement;
 import net.raccoon.will.structura.client.gui.GuiManager;
-import net.raccoon.will.structura.client.gui.HudManager;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class BaseHud {
+    private final Map<String, GuiElement> elements = new LinkedHashMap<>();
+    //youll need to create a construction and thats where youll be adding the elements
 
-    // you make the elements in here dawg
-    protected abstract void buildElements();
-
+    //this just adds the elements to the guiManager.
     protected <T extends GuiElement> T addElement(T element) {
+        elements.put(element.getId(), element);
         GuiManager.add(element);
         return element;
     }
@@ -30,6 +35,26 @@ public abstract class BaseHud {
     protected static boolean isStandingOnBlock(Player player, Block block) {
         return player.level().getBlockState(player.blockPosition().below())
                 .is(block);
+    }
+
+    protected List<GuiElement> getContainingElements () {
+        return (List<GuiElement>) elements.values();
+    }
+
+    public void hideHud() {
+        if (this.elements.isEmpty()) return;
+
+        for (GuiElement element : this.elements.values()) {
+            element.hide();
+        }
+    }
+
+    protected void showHud() {
+        if (this.elements.isEmpty()) return;
+
+        for (GuiElement element : this.elements.values()) {
+            element.show();
+        }
     }
 
     //this is client-side only. no server-sided stuff will work.

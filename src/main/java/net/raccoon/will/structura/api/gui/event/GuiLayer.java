@@ -15,6 +15,8 @@ import net.raccoon.will.structura.client.gui.GuiManager;
 @EventBusSubscriber(modid = Structura.MODID, value = Dist.CLIENT)
 public final class GuiLayer {
 
+    private static long lastFrameTime = System.nanoTime();
+
     private GuiLayer() {}
 
     @SubscribeEvent
@@ -29,9 +31,15 @@ public final class GuiLayer {
         int screenWidth = window.getGuiScaledWidth();
         int screenHeight = window.getGuiScaledHeight();
 
-        HudManager.update(player);
+        long now = System.nanoTime();
+        float deltaSeconds = (now - lastFrameTime) / 1_000_000_000f;
+        lastFrameTime = now;
 
+        deltaSeconds = Math.min(deltaSeconds, 0.05f);
+
+        HudManager.update(player);
         GuiManager.updateAll();
+
         GuiManager.render(graphics, screenWidth, screenHeight);
     }
 }

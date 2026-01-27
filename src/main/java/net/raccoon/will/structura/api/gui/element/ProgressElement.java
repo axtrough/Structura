@@ -1,7 +1,8 @@
 package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
 
 /**
@@ -9,7 +10,7 @@ import net.raccoon.will.structura.api.gui.layout.Anchor;
  */
 
 public class ProgressElement extends GuiElement{
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final int texWidth;
     private final int texHeight;
     private final int emptyX, emptyY;
@@ -31,9 +32,9 @@ public class ProgressElement extends GuiElement{
      * @param barWidth  the width of the progress bar
      * @param barHeight the height of the progress bar
      */
-    public ProgressElement(ResourceLocation texture, int texWidth, int texHeight, int barWidth, int barHeight, int emptyX, int emptyY, int fullX, int fullY,
-                           Anchor anchor, int offsetX, int offsetY) {
-        super(barWidth, barHeight, anchor, offsetX, offsetY);
+    public ProgressElement(String id, Identifier texture, int texWidth, int texHeight, int barWidth, int barHeight,
+                           int emptyX, int emptyY, int fullX, int fullY, Anchor anchor, int offsetX, int offsetY) {
+        super(id, barWidth, barHeight, anchor, offsetX, offsetY);
         this.texture = texture;
         this.texWidth = texWidth;
         this.texHeight = texHeight;
@@ -54,7 +55,7 @@ public class ProgressElement extends GuiElement{
         int filledWidth = (int) (width * progress);
         if (filledWidth > 0) {
             //it will only render this bar to the percentage of the full empty bar. will draw over it
-            graphics.blit(texture, 0, 0, fullX, fullY, filledWidth, height, texWidth, texHeight);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, texture, 0, 0, fullX, fullY, filledWidth, height, texWidth, texHeight);
         }
     }
 }

@@ -2,6 +2,7 @@ package net.raccoon.will.structura.api.feature;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -52,7 +53,8 @@ public class Hitscan {
                 eyePos,
                 reachPos,
                 player.getBoundingBox().expandTowards(lookVec.scale(maxDistance)).inflate(1.0),
-                e -> e instanceof LivingEntity && e != player
+                e -> e instanceof LivingEntity && e != player,
+                1f
         );
         double entityDist = entityHit == null ? Double.MAX_VALUE : entityHit.getLocation().distanceTo(eyePos);
 

@@ -3,19 +3,21 @@ package net.raccoon.will.structura.client.gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.raccoon.will.structura.api.gui.element.GuiElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GuiManager {
-    private static final List<GuiElement> ELEMENTS = new ArrayList<>();
+    private static final Map<String, GuiElement> ELEMENTS = new LinkedHashMap<>();
     public static boolean DEBUG_RENDER_TIME = false;
 
     public static void add(GuiElement element) {
-        ELEMENTS.add(element);
+        if (ELEMENTS.containsKey(element.getId())) {
+            throw new IllegalStateException("Duplicate Element id: " + element.getId());
+        }
+        ELEMENTS.put(element.getId(), element);
     }
 
-    public static void remove(GuiElement element) {
-        ELEMENTS.remove(element);
+    public static void remove(String id) {
+        ELEMENTS.remove(id);
     }
 
     public static void clear() {
@@ -24,21 +26,31 @@ public class GuiManager {
 
     //updates all the elements ofc
     public static void updateAll() {
-        for (GuiElement element : ELEMENTS) {
+        for (GuiElement element : ELEMENTS.values()) {
             element.update();
         }
     }
 
+    public static Collection<GuiElement> getAll() {
+        return ELEMENTS.values();
+    }
+
+    public static Set<String> getIds() {
+        return ELEMENTS.keySet();
+    }
+
+    public static GuiElement get(String id) {
+        return ELEMENTS.get(id);
+    }
+
     // renders all the elements. also for debug things
     public static void render(GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
+        for (GuiElement element : ELEMENTS.values()) {
+            element.render(guiGraphics, screenWidth, screenHeight);
+        }
+
         long start = 0;
         if (DEBUG_RENDER_TIME) start = System.nanoTime();
-
-        for (GuiElement element : ELEMENTS) {
-            if (!element.isChildElement()) {
-                element.render(guiGraphics, screenWidth, screenHeight);
-            }
-        }
 
         if (DEBUG_RENDER_TIME) {
             long end = System.nanoTime();

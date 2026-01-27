@@ -1,6 +1,7 @@
 package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
@@ -22,22 +23,22 @@ public class TextElement extends GuiElement {
     protected int cachedHeight;
     protected int cachedWidth;
 
-    public TextElement(Component text, int color, boolean shadow, Anchor anchor, int offsetX, int offsetY) {
-        super(0, 0, anchor, offsetX, offsetY);
+    public TextElement(String id, Component text, int color, boolean shadow, Anchor anchor, int offsetX, int offsetY) {
+        super(id, 0, 0, anchor, offsetX, offsetY);
         this.originalText = text;
         this.originalColor = color;
-        this.color = color;
+        this.color = 0xFF000000 | color;
         this.shadow = shadow;
         setText(text);
     }
 
     //Constructor if no initial text is wanted. May be used if you assign text later in Update.
-    public TextElement(int color, boolean shadow, Anchor anchor, int offsetX, int offsetY) {
-        super(0, 0, anchor, offsetX, offsetY);
+    public TextElement(String id, int color, boolean shadow, Anchor anchor, int offsetX, int offsetY) {
+        super(id, 0, 0, anchor, offsetX, offsetY);
         this.originalText = Component.empty();
         this.text = Component.empty();
         this.originalColor = color;
-        this.color = color;
+        this.color = 0xFF000000 | color;
         this.shadow = shadow;
         setText(text);
     }
@@ -85,10 +86,10 @@ public class TextElement extends GuiElement {
         }
     }
 
+
     @Override
     protected void draw(GuiGraphics graphics) {
-        if (text != null && !text.getString().isEmpty()) {
-            graphics.drawString(Minecraft.getInstance().font, text, 0, 0, color, shadow);
-        }
+        if (text == null || text.getString().isEmpty()) return;
+        graphics.drawString(Minecraft.getInstance().font, text, 0, 0, color, shadow);
     }
 }

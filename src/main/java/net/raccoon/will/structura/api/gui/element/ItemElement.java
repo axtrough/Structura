@@ -1,6 +1,7 @@
 package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
 /**
@@ -8,31 +9,30 @@ import net.raccoon.will.structura.api.gui.layout.Anchor;
  */
 
 public class ItemElement extends GuiElement {
-    private ItemStack item;
-    private final ItemStack originalItem;
+    private Item item;
+    private ItemStack itemStack;
+    private final Item originalItem;
 
-    public ItemElement(ItemStack stack, int width, int height, Anchor anchor, int offsetX, int offsetY) {
-        super(width, height, anchor, offsetX, offsetY);
-        ItemStack safe = stack == null ? ItemStack.EMPTY : stack.copy();
-        this.item = safe;
-        this.originalItem = safe.copy();
+    public ItemElement(String id, Item item, int width, int height, Anchor anchor, int offsetX, int offsetY) {
+        super(id, width, height, anchor, offsetX, offsetY);
+        this.item = item;
+        this.originalItem = item;
     }
 
-    //Constructor if no initial item is wanted. May be used if you assign item later in Update.
-    public ItemElement(int width, int height, Anchor anchor, int offsetX, int offsetY) {
-        this(ItemStack.EMPTY, width, height, anchor, offsetX, offsetY);
+    public ItemElement(String id, int width, int height, Anchor anchor, int offsetX, int offsetY) {
+        this(id, null, width, height, anchor, offsetX, offsetY);
     }
 
-    public void setItem(ItemStack stack) {
-        ItemStack safe = stack == null ? ItemStack.EMPTY : stack.copy();
-
-        if (!ItemStack.matches(this.item, safe)) {
-            this.item = safe.copy();
+    public void setItem(Item item) {
+        if (this.item != item) {
+            this.item = item;
+            this.itemStack = null; // reset lazy stack
         }
     }
 
-    private void resetItem() {
-        this.item = originalItem.copy();
+    public void resetItem() {
+        this.item = originalItem;
+        this.itemStack = null;
     }
 
     @Override
@@ -43,8 +43,9 @@ public class ItemElement extends GuiElement {
 
     @Override
     protected void draw(GuiGraphics graphics) {
-        if (!item.isEmpty()) {
-            graphics.renderItem(item, 0, 0);
+        if (item != null) {
+            if (itemStack == null) itemStack = new ItemStack(item);
+            graphics.renderItem(itemStack, 0, 0);
         }
     }
 }

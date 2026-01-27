@@ -1,7 +1,7 @@
 package net.raccoon.will.structura;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -15,8 +15,8 @@ public class Structura {
     public static final String MODID = "structura";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static ResourceLocation resLoc(String name) {
-        return ResourceLocation.fromNamespaceAndPath(Structura.MODID, name);
+    public static Identifier resLoc(String name) {
+        return Identifier.fromNamespaceAndPath(Structura.MODID, name);
     }
 
     public Structura(IEventBus modEventBus, ModContainer modContainer) {
@@ -29,4 +29,6 @@ public class Structura {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
     }
+
+
 }

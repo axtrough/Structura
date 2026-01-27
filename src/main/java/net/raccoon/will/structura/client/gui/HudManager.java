@@ -13,6 +13,7 @@ public class HudManager {
         HUDS.add(hud);
     }
 
+    //updates the actual hud in whole
     public static void update(Player player) {
         for (BaseHud hud : HUDS) {
             hud.update(player);
