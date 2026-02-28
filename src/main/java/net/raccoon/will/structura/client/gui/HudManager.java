@@ -1,10 +1,12 @@
 package net.raccoon.will.structura.client.gui;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import net.raccoon.will.structura.api.gui.hud.BaseHud;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class HudManager {
     private static final List<BaseHud> HUDS = new ArrayList<>();
@@ -17,6 +19,12 @@ public class HudManager {
     public static void update(Player player) {
         for (BaseHud hud : HUDS) {
             hud.update(player);
+        }
+    }
+
+    public static void render(GuiGraphics graphics, int screenWidth, int screenHeight) {
+        for (BaseHud hud : HUDS) {
+            hud.render(graphics, screenWidth, screenHeight);
         }
     }
 }

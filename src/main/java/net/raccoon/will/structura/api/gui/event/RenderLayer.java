@@ -10,14 +10,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.raccoon.will.structura.Structura;
 import net.raccoon.will.structura.client.gui.HudManager;
-import net.raccoon.will.structura.client.gui.GuiManager;
 
 @EventBusSubscriber(modid = Structura.MODID, value = Dist.CLIENT)
-public final class GuiLayer {
+public final class RenderLayer {
 
     private static long lastFrameTime = System.nanoTime();
 
-    private GuiLayer() {}
+    private RenderLayer() {}
 
     @SubscribeEvent
     public static void onRender(RenderGuiEvent.Pre event) {
@@ -38,9 +37,7 @@ public final class GuiLayer {
         deltaSeconds = Math.min(deltaSeconds, 0.05f);
 
         HudManager.update(player);
-        GuiManager.updateAll();
-
-        GuiManager.render(graphics, screenWidth, screenHeight);
+        HudManager.render(graphics, screenWidth, screenHeight);
     }
 }
 
