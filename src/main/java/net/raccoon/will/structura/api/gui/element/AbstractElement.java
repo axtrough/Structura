@@ -1,6 +1,8 @@
 package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
 import net.raccoon.will.structura.api.gui.layout.ElementAnchor;
 
@@ -8,12 +10,13 @@ import net.raccoon.will.structura.api.util.AnchorUtil;
 
 //made by will >:3
 
-public abstract class GuiElement {
+@OnlyIn(Dist.CLIENT)
+public abstract class AbstractElement {
     private final String id;
     private AnchorUtil util;
 
     public int width, height;
-    protected int offsetX, offsetY;
+    protected int x, y;
 
     protected float scale = 1.0f;
     protected boolean debug = false;
@@ -22,22 +25,22 @@ public abstract class GuiElement {
     protected Anchor anchor;
     protected ElementAnchor elementAnchor = ElementAnchor.TOP_LEFT;
 
-    protected final float defaultScale;
-    protected final int defaultWidth, defaultHeight, defaultOffsetX, defaultOffsetY;
+    protected final float initialScale;
+    protected final int initialWidth, initialHeight, initialX, initialY;
 
-    public GuiElement(String id, int width, int height, Anchor anchor, int offsetX, int offsetY) {
+    public AbstractElement(String id, int width, int height, Anchor anchor, int posX, int posY) {
         this.id = id;
         this.width = width;
         this.height = height;
         this.anchor = anchor;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+        this.x = posX;
+        this.y = posY;
 
-        this.defaultWidth = width;
-        this.defaultHeight = height;
-        this.defaultOffsetX = offsetX;
-        this.defaultOffsetY = offsetY;
-        this.defaultScale = scale;
+        this.initialWidth = width;
+        this.initialHeight = height;
+        this.initialX = posX;
+        this.initialY = posY;
+        this.initialScale = scale;
     }
 
     protected abstract void draw(GuiGraphics graphics);
@@ -78,20 +81,20 @@ public abstract class GuiElement {
     public float getScale() {
         return scale;
     }
-    public int getOffsetX() {
-        return offsetX;
+    public int getX() {
+        return x;
     }
-    public int getOffsetY() {
-        return offsetY;
+    public int getY() {
+        return y;
     }
     public Anchor getAnchor() {
         return anchor;
     }
-    public int getDefaultOffsetX() {
-        return defaultOffsetX;
+    public int getInitialX() {
+        return initialX;
     }
-    public int getDefaultOffsetY() {
-        return defaultOffsetY;
+    public int getInitialY() {
+        return initialY;
     }
     public ElementAnchor getElementAnchor() {
         return elementAnchor;
@@ -101,11 +104,11 @@ public abstract class GuiElement {
     public void setScale(float scale) {
         this.scale = scale;
     }
-    public void setOffsetX(int offsetX) {
-        this.offsetX = offsetX;
+    public void setX(int posX) {
+        this.x = posX;
     }
-    public void setOffsetY(int offsetY) {
-        this.offsetY = offsetY;
+    public void setY(int posY) {
+        this.y = posY;
     }
     public void setAnchor(Anchor anchor) {
         this.anchor = anchor;
@@ -115,25 +118,25 @@ public abstract class GuiElement {
     }
 
     //* Helpers
-    public void follow(GuiElement element, int distanceX, int distanceY) {
-        this.setOffsetX(element.getOffsetX() + distanceX);
-        this.setOffsetY(element.getOffsetY() + distanceY);
-    }
-    public void offHandOffset() {
-        this.setOffsetX(this.getDefaultOffsetX() + 29);
+    public void follow(AbstractElement element, int distanceX, int distanceY) {
+        this.setX(element.getX() + distanceX);
+        this.setY(element.getY() + distanceY);
     }
 
+    public void offHandOffset() {
+        this.setX(this.getInitialX() + 29);
+    }
 
     public void resetScale() {
-        this.scale = defaultScale;
+        this.scale = initialScale;
     }
     public void resetSize() {
-        this.width = defaultWidth;
-        this.height = defaultHeight;
+        this.width = initialWidth;
+        this.height = initialHeight;
     }
     public void resetOffset() {
-        this.offsetX = defaultOffsetX;
-        this.offsetY = defaultOffsetY;
+        this.x = initialX;
+        this.y = initialY;
     }
 
     public void resetAll() {
@@ -146,4 +149,5 @@ public abstract class GuiElement {
     public void update() {
         updateSize();
     }
+
 }
