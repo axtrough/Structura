@@ -1,59 +1,67 @@
 package net.raccoon.will.structura.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.server.command.EnumArgument;
-import net.raccoon.will.structura.api.gui.element.GuiElement;
-import net.raccoon.will.structura.api.gui.layout.Anchor;
-import net.raccoon.will.structura.client.gui.GuiManager;
+import net.raccoon.will.structura.api.gui.element.AbstractElement;
+import net.raccoon.will.structura.api.gui.hud.BaseHud;
+import net.raccoon.will.structura.client.gui.HudManager;
 
-import java.util.Collection;
+import java.util.List;
 
 public class ListElements {
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("structura")
                         .then(
-                                Commands.literal("element")
-                                        .then(
-                                                Commands.literal("list")
-                                                        .executes(ctx -> listElements(ctx.getSource()))
-                                        )
+                                Commands.literal("elements")
+                                        .executes(ctx -> listAllElements(ctx.getSource()))
                         )
         );
     }
 
+    private static int listAllElements(CommandSourceStack source) {
+        List<BaseHud> allHuds = HudManager.getAllHuds();
 
-    private static int listElements(CommandSourceStack source) {
-        Collection<GuiElement> elements = GuiManager.getAll();
+        if (allHuds.isEmpty()) {
+            source.sendSuccess(
+                    () -> Component.literal("no huds are registered").withStyle(ChatFormatting.RED),
+                    false
+            );
+            return 0;
+        }
 
+        int totalElements = 0;
 
-            if (elements.isEmpty()) {
-                source.sendSuccess(
-                        () -> Component.literal("No GUI Elements Registered"),
-                        false
-                );
-                return 0;
-            }
+        for (BaseHud hud : allHuds) {
+            List<AbstractElement> elements = hud.getElements();
 
             source.sendSuccess(
-                    () -> Component.literal("GUI Elements:")
+                    () -> Component.literal("HUD: " + hud.getId())
                             .withStyle(ChatFormatting.GOLD),
                     false
             );
 
-            for (GuiElement element : elements) {
+            if (elements.isEmpty()) {
                 source.sendSuccess(
-                        () -> Component.literal(" - " + element.getId())
-                                .withStyle(ChatFormatting.GRAY),
+                        () -> Component.literal("  (no elements)").withStyle(ChatFormatting.GRAY),
                         false
                 );
+            } else {
+                for (AbstractElement element : elements) {
+                    source.sendSuccess(
+                            () -> Component.literal(" - " + element.getId())
+                                    .withStyle(ChatFormatting.GRAY),
+                            false
+                    );
+                    totalElements++;
+                }
             }
-
-            return elements.size();
         }
+
+        return totalElements;
+    }
 }

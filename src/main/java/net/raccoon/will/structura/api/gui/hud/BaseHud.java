@@ -1,57 +1,76 @@
 package net.raccoon.will.structura.api.gui.hud;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.raccoon.will.structura.api.gui.element.GuiElement;
+import net.raccoon.will.structura.api.gui.element.AbstractElement;
 import net.raccoon.will.structura.client.gui.HudManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseHud {
-    private final List<GuiElement> elements = new ArrayList<>();
-    //youll need to create a construction and thats where youll be adding the elements
+    private final List<AbstractElement> elements = new ArrayList<>();
+    private final String id;
+
+    protected BaseHud(String id) {
+        this.id = id;
+        init();
+    };
+
+    public String getId() {
+        return id;
+    }
 
     public void add() {
         HudManager.add(this);
     }
 
-    //this just adds the elements to the guiManager.
-    public <T extends GuiElement> T addElement(T element) {
+    //define widgets inside this
+    protected abstract void init();
+
+    //this just adds the widgets to the hud.
+    public <T extends AbstractElement> T addElement(T element) {
         elements.add(element);
         return element;
     }
 
-    public List<GuiElement> getContainingElements () {
+    public List<AbstractElement> getElements() {
         return elements;
     }
 
+
+
     public void hideHud() {
         if (this.elements.isEmpty()) return;
-        for (GuiElement element : elements) {
-            element.hide();
+        for (AbstractElement element : elements) {
+            element.setVisible(false);
         }
     }
 
     protected void showHud() {
         if (this.elements.isEmpty()) return;
-        for (GuiElement element : elements) {
-            element.show();
+        for (AbstractElement element : elements) {
+            element.setVisible(true);
         }
     }
 
-    //this is client-side only. no server-sided stuff will work.
-    public void update(Player player) {
-        for (GuiElement element : elements) {
+    public final void update(Player player) {
+        for (AbstractElement element : elements) {
             element.update();
         }
+
+        onUpdate(player);
     }
 
-    public void render(GuiGraphics guiGraphics, int screenWidth, int screenHeight) {
-        for (GuiElement element : elements) {
+
+    //this is client-side only. no server-sided stuff will work.
+    protected abstract void onUpdate(Player player);
+
+    public void render(GuiGraphicsExtractor guiGraphics, int screenWidth, int screenHeight) {
+        for (AbstractElement element : elements) {
             element.render(guiGraphics, screenWidth, screenHeight);
         }
     }

@@ -1,17 +1,18 @@
 package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.raccoon.will.structura.api.gui.layout.Anchor;
+import net.raccoon.will.structura.api.util.ColorUitl;
+
+import java.awt.*;
 
 /**
  * Pretty self-explanatory.
- * Make an element with text
+ * Make a widget with text
  */
 
-public class TextElement extends GuiElement {
+public class TextElement extends AbstractElement {
     private final Component originalText;
     private Component text;
 
@@ -23,30 +24,19 @@ public class TextElement extends GuiElement {
     protected int cachedHeight;
     protected int cachedWidth;
 
-    public TextElement(String id, Component text, int color, boolean shadow, Anchor anchor, int offsetX, int offsetY) {
-        super(id, 0, 0, anchor, offsetX, offsetY);
-        this.originalText = text;
-        this.originalColor = color;
-        this.color = 0xFF000000 | color;
-        this.shadow = shadow;
-        setText(text);
-    }
-
-    //Constructor if no initial text is wanted. May be used if you assign text later in Update.
-    public TextElement(String id, int color, boolean shadow, Anchor anchor, int offsetX, int offsetY) {
-        super(id, 0, 0, anchor, offsetX, offsetY);
-        this.originalText = Component.empty();
-        this.text = Component.empty();
-        this.originalColor = color;
-        this.color = 0xFF000000 | color;
-        this.shadow = shadow;
-        setText(text);
+    public TextElement(TextElement.Builder builder) {
+        super(builder.id, builder.width, builder.height, builder.anchor, builder.x, builder.y);
+        this.text = builder.text;
+        this.originalText = builder.text;
+        this.color = builder.color;
+        this.originalColor = builder.color;
+        this.shadow = builder.shadow;
+        this.elementAnchor = builder.elementAnchor;
     }
 
     public void resetText() {
         setText(originalText);
     }
-
     public void resetColor() {
         this.color = originalColor;
     }
@@ -86,10 +76,59 @@ public class TextElement extends GuiElement {
         }
     }
 
-
     @Override
-    protected void draw(GuiGraphics graphics) {
+    protected void draw(GuiGraphicsExtractor graphics) {
         if (text == null || text.getString().isEmpty()) return;
-        graphics.drawString(Minecraft.getInstance().font, text, 0, 0, color, shadow);
+        graphics.text(Minecraft.getInstance().font, text, 0, 0, color, shadow);
+    }
+
+    public static Builder builder(String id) {
+        return new Builder(id);
+    }
+    public static class Builder extends AbstractElement.Builder<Builder> {
+        private Component text;
+        private boolean shadow = false;
+        private int color;
+
+        public Builder(String id) {
+            super(id);
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        public Builder text(Component text) {
+            this.text = text;
+            return this;
+        }
+
+        public Builder color(int R, int G, int B) {
+            this.color = ColorUitl.rgb(R, G, B);
+            return this;
+        }
+
+        public Builder color(int A, int R, int G, int B) {
+            this.color = ColorUitl.argb(A, R, G, B);
+            return this;
+        }
+
+        public Builder color(int hex) {
+            this.color = hex;
+            return this;
+        }
+
+
+
+        public Builder shadow(boolean shadow) {
+            this.shadow = shadow;
+            return this;
+        }
+
+        @Override
+        public TextElement build() {
+            return new TextElement(this);
+        }
     }
 }
