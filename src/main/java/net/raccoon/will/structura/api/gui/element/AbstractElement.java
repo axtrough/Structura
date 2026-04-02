@@ -81,6 +81,14 @@ public abstract class AbstractElement {
         return x >= (double)this.getX() && y >= (double)this.getY() && x < (double)this.getRight() && y < (double)this.getBottom();
     }
 
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
     public boolean isMouseOver(double mouseX, double mouseY) {
         return this.isActive() && this.areCoordinatesInRectangle(mouseX, mouseY);
     }
