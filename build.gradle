@@ -137,12 +137,6 @@ publishing {
     }
 }
 
-task checkCredentials {
-    doLast {
-        println "Username: ${project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")}"
-        println "Token set? ${System.getenv("GITHUB_TOKEN") != null}"
-    }
-}
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {
