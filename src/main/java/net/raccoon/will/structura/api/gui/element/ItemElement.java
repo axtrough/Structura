@@ -3,8 +3,6 @@ package net.raccoon.will.structura.api.gui.element;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.raccoon.will.structura.api.gui.layout.Anchor;
-import net.raccoon.will.structura.api.gui.layout.ElementAnchor;
 
 /**
  * Element that allows you to render any item.

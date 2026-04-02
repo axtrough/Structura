@@ -1,7 +1,6 @@
 package net.raccoon.will.structura.api.gui.element;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
@@ -155,10 +154,6 @@ public abstract class AbstractElement {
     }
 
     //* Helpers
-    public void follow(AbstractElement element, int distanceX, int distanceY) {
-        this.setX(element.getX() + distanceX);
-        this.setY(element.getY() + distanceY);
-    }
 
     public void offHandOffset() {
         this.setX(this.getInitialX() + 29);
@@ -208,7 +203,7 @@ public abstract class AbstractElement {
             return self();
         }
 
-        public T position(int x, int y) {
+        public T offset(int x, int y) {
             this.x = x;
             this.y = y;
             return self();

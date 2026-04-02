@@ -4,7 +4,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
-import net.raccoon.will.structura.api.gui.layout.ElementAnchor;
 
 /**
  * Simple element to render images and so on

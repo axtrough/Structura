@@ -5,8 +5,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.raccoon.will.structura.api.util.ColorUitl;
 
-import java.awt.*;
-
 /**
  * Pretty self-explanatory.
  * Make a widget with text

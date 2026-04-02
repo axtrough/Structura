@@ -116,19 +116,33 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-//    publishing {
-//        publications {
-//            register('mavenJava', MavenPublication) {
-//                from components.java
-//            }
-//        }
-//        repositories {
-//            maven {
-//                url "file://${project.projectDir}/repo"
-//            }
-//        }
-//    }
+publishing {
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+            groupId = mod_group_id
+            artifactId = mod_id
+            version = mod_version
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/axtrough/Structura")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
 
+task checkCredentials {
+    doLast {
+        println "Username: ${project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")}"
+        println "Token set? ${System.getenv("GITHUB_TOKEN") != null}"
+    }
+}
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {
