@@ -43,9 +43,9 @@ public class HudManager {
         return HUDS;
     }
 
-    public static void render(GuiGraphicsExtractor graphics, int screenWidth, int screenHeight) {
+    public static void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int screenWidth, int screenHeight) {
         for (BaseHud hud : HUDS) {
-            hud.render(graphics, screenWidth, screenHeight);
+            hud.render(graphics, mouseX, mouseY, screenWidth, screenHeight);
         }
     }
 }

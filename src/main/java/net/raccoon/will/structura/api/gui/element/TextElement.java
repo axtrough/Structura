@@ -3,6 +3,7 @@ package net.raccoon.will.structura.api.gui.element;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.raccoon.will.structura.api.util.ColorUitl;
 
 /**
@@ -23,7 +24,7 @@ public class TextElement extends AbstractElement {
     protected int cachedWidth;
 
     public TextElement(TextElement.Builder builder) {
-        super(builder.id, builder.width, builder.height, builder.anchor, builder.x, builder.y);
+        super(builder.id, builder.width, builder.height, builder.anchor, builder.x, builder.y, builder.scale);
         this.text = builder.text;
         this.originalText = builder.text;
         this.color = builder.color;
@@ -77,7 +78,8 @@ public class TextElement extends AbstractElement {
     @Override
     protected void draw(GuiGraphicsExtractor graphics) {
         if (text == null || text.getString().isEmpty()) return;
-        graphics.text(Minecraft.getInstance().font, text, 0, 0, color, shadow);
+        int alphaColor = ARGB.multiplyAlpha(color, alpha);
+        graphics.text(Minecraft.getInstance().font, text, 0, 0, alphaColor, shadow);
     }
 
     public static Builder builder(String id) {

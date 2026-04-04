@@ -26,8 +26,9 @@ public abstract class AbstractElement {
 
     protected final float initialScale;
     protected final int initialWidth, initialHeight, initialX, initialY;
+    protected float alpha = 1.0F;
 
-    public AbstractElement(String id, int width, int height, Anchor anchor, int posX, int posY) {
+    public AbstractElement(String id, int width, int height, Anchor anchor, int posX, int posY, float scale) {
         this.id = id;
 
         this.width = width;
@@ -35,6 +36,7 @@ public abstract class AbstractElement {
         this.anchor = anchor;
         this.x = posX;
         this.y = posY;
+        this.scale = scale;
 
         this.initialWidth = width;
         this.initialHeight = height;
@@ -44,15 +46,45 @@ public abstract class AbstractElement {
     }
 
     protected abstract void draw(GuiGraphicsExtractor graphics);
-    public void render(GuiGraphicsExtractor graphics, int screenWidth, int screenHeight) {
+
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int screenWidth, int screenHeight) {
+        if (alpha == 0.0F) visible = false;
         if (!visible) return;
+        boolean wasHovered = this.isHovered;
 
         int x = getRenderX(screenWidth);
         int y = getRenderY(screenHeight);
 
+        this.isHovered = isActive()
+                && mouseX >= x && mouseY >= y
+                && mouseX < x + (int)(width * initialScale)
+                && mouseY < y + (int)(height * initialScale);
+
+        if (isHovered && !wasHovered) onHoverStart();
+        else if (!isHovered && wasHovered) onHoverEnd();
+        if (isHovered) onHover();
+
         graphics.pose().pushMatrix();
+
+        //holy spaghetti code
+        float pivotX = switch (elementAnchor) {
+            case TOP_LEFT, CENTER_LEFT, BOTTOM_LEFT -> 0;
+            case TOP_CENTER, CENTER, BOTTOM_CENTER -> width / 2f;
+            case TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT -> (float) width;
+        };
+
+        float pivotY = switch (elementAnchor) {
+            case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> 0;
+            case CENTER_LEFT, CENTER, CENTER_RIGHT -> height / 2f;
+            case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> (float) height;
+        };
+
         graphics.pose().translate(x, y);
-        graphics.pose().scale(scale, scale);
+        graphics.pose().translate(pivotX * initialScale, pivotY * initialScale);
+        graphics.pose().scale(scale / initialScale, scale / initialScale);
+        graphics.pose().translate(-pivotX * initialScale, -pivotY * initialScale);
+        graphics.pose().scale(initialScale, initialScale);
+
         draw(graphics);
 
         if (debug) {
@@ -67,20 +99,6 @@ public abstract class AbstractElement {
         return this.visible && this.active;
     }
 
-
-
-    public int getRight() {
-        return this.getX() + this.width;
-    }
-
-    public int getBottom() {
-        return this.getY() + this.height;
-    }
-
-    private boolean areCoordinatesInRectangle(double x, double y) {
-        return x >= (double)this.getX() && y >= (double)this.getY() && x < (double)this.getRight() && y < (double)this.getBottom();
-    }
-
     public int getWidth() {
         return this.width;
     }
@@ -89,13 +107,9 @@ public abstract class AbstractElement {
         return this.height;
     }
 
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return this.isActive() && this.areCoordinatesInRectangle(mouseX, mouseY);
-    }
-
-    public boolean isHovered() {
-        return this.isHovered;
-    }
+    public void onHoverStart() {}
+    public void onHover() {}
+    public void onHoverEnd() {}
 
     //* Misc
     public void debug (boolean debug) {
@@ -104,6 +118,14 @@ public abstract class AbstractElement {
 
     public String getId() {
         return id;
+    }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = Math.max(0f, Math.min(1f, alpha));
     }
 
     public void setVisible(boolean visible) {
@@ -120,6 +142,10 @@ public abstract class AbstractElement {
 
     public float getScale() {
         return scale;
+    }
+
+    public float getInitialScale() {
+        return initialScale;
     }
 
     public void setX(int posX) {
@@ -161,8 +187,6 @@ public abstract class AbstractElement {
         return elementAnchor;
     }
 
-    //* Helpers
-
     public void offHandOffset() {
         this.setX(this.getInitialX() + 29);
     }
@@ -190,6 +214,9 @@ public abstract class AbstractElement {
         updateSize();
     }
 
+    public boolean isHovered() {
+        return isHovered;
+    }
 
     public static abstract class Builder<T extends Builder<T>> {
         protected final String id;
@@ -244,8 +271,8 @@ public abstract class AbstractElement {
 
         int adjustmentX = switch (elementAnchor) {
             case TOP_LEFT, CENTER_LEFT, BOTTOM_LEFT -> 0;
-            case TOP_CENTER, CENTER, BOTTOM_CENTER -> (int) (width * scale / 2f);
-            case TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT -> (int) (width * scale);
+            case TOP_CENTER, CENTER, BOTTOM_CENTER -> (int) (width * initialScale / 2f);
+            case TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT -> (int) (width * initialScale);
         };
 
         return anchorX - adjustmentX;
@@ -260,8 +287,8 @@ public abstract class AbstractElement {
 
         int adjustmentY = switch (elementAnchor) {
             case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> 0;
-            case CENTER_LEFT, CENTER, CENTER_RIGHT -> (int) (height * scale / 2f);
-            case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> (int) (height * scale);
+            case CENTER_LEFT, CENTER, CENTER_RIGHT -> (int) (height * initialScale / 2f);
+            case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> (int) (height * initialScale);
         };
 
         return anchorY - adjustmentY;

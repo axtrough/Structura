@@ -41,8 +41,6 @@ public abstract class BaseHud {
         return elements;
     }
 
-
-
     public void hideHud() {
         if (this.elements.isEmpty()) return;
         for (AbstractElement element : elements) {
@@ -65,13 +63,12 @@ public abstract class BaseHud {
         onUpdate(player);
     }
 
-
     //this is client-side only. no server-sided stuff will work.
     protected abstract void onUpdate(Player player);
 
-    public void render(GuiGraphicsExtractor guiGraphics, int screenWidth, int screenHeight) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int screenWidth, int screenHeight) {
         for (AbstractElement element : elements) {
-            element.render(guiGraphics, screenWidth, screenHeight);
+            element.render(guiGraphics, mouseX, mouseY, screenWidth, screenHeight);
         }
     }
 
@@ -88,8 +85,4 @@ public abstract class BaseHud {
         return player.level().getBlockState(player.blockPosition().below())
                 .is(block);
     }
-
-
-
-
 }

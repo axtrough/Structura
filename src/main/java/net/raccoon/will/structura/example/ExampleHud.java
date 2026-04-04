@@ -1,24 +1,27 @@
 package net.raccoon.will.structura.example;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.fml.ModList;
 import net.raccoon.will.structura.Structura;
 import net.raccoon.will.structura.api.feature.Hitscan;
-import net.raccoon.will.structura.api.gui.element.ItemElement;
-import net.raccoon.will.structura.api.gui.element.BasicElement;
-import net.raccoon.will.structura.api.gui.element.ProgressElement;
-import net.raccoon.will.structura.api.gui.element.TextElement;
+import net.raccoon.will.structura.api.gui.animation.Happenings;
+import net.raccoon.will.structura.api.gui.element.*;
 import net.raccoon.will.structura.api.gui.hud.BaseHud;
 import net.raccoon.will.structura.api.gui.layout.Anchor;
 import net.raccoon.will.structura.api.gui.layout.ElementAnchor;
 
 
 public class ExampleHud extends BaseHud {
+    Happenings actions = new Happenings();
     private TextElement textElement;
+    private TextElement textElement2;
     private BasicElement basicElement;
     private ItemElement itemElement;
     private ProgressElement progressElement;
@@ -31,11 +34,12 @@ public class ExampleHud extends BaseHud {
     protected void init() {
         basicElement = addElement(BasicElement.builder("basic_element")
                 .texture(Structura.texLoc("gui/basic_element.png"))
+                .size(128, 128)
                 .texSize(128, 128)
                 .anchor(Anchor.BOTTOM_RIGHT)
                 .elementAnchor(ElementAnchor.BOTTOM_RIGHT)
                 .offset(8, 8)
-                .scale(0.25f)
+                .scale(1)
                 .build());
 
         itemElement = addElement(ItemElement.builder("item_element")
@@ -48,6 +52,14 @@ public class ExampleHud extends BaseHud {
                 .color(255, 255, 255) //use either rgb, hex or argb
                 .shadow(true)
                 .offset(8, -24)
+                .build());
+
+        textElement2 = addElement(TextElement.builder("mod_element")
+                .text(Component.literal("This is a text element"))
+                .color(125, 125, 125) //use either rgb, hex or argb
+                .shadow(true)
+                .offset(8, -36)
+                .scale(1.25F)
                 .build());
 
 //        progressElement = addElement(ProgressElement.builder("progress_element")
@@ -63,10 +75,17 @@ public class ExampleHud extends BaseHud {
     protected void onUpdate(Player player) {
         whatBlock(player);
 
+//        for (AbstractElement element : this.getElements()) {
+//            new Actions().scaling(0.02F, element);
+//        };
+        actions.fading(0.1F, textElement);
+        actions.fading(0.1F, basicElement);
+
     }
 
     protected void whatBlock(Player player) {
         textElement.setVisible(true);
+        textElement2.setVisible(true);
         itemElement.setVisible(true);
 
         Hitscan.HitscanResult result = Hitscan.performHitscan(player, 4);
@@ -75,14 +94,21 @@ public class ExampleHud extends BaseHud {
 
             BlockPos pos = hit.getBlockPos();
             BlockState state = player.level().getBlockState(pos);
+            Block block = state.getBlock();
+            String modId = BuiltInRegistries.BLOCK.getKey(block).getNamespace();
+            String modName = ModList.get().getModContainerById(modId).get().getModInfo().getDisplayName();
 
             textElement.setText(Component.literal(state.getBlock().getName().getString()));
+            textElement2.setText(Component.literal(modName));
             itemElement.setItem(state.getBlock().asItem());
 
         }
         else {
             textElement.setVisible(false);
+            textElement2.setVisible(false);
             itemElement.setVisible(false);
         }
     }
+
+
 }

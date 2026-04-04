@@ -15,7 +15,7 @@ public class ItemElement extends AbstractElement {
 
 
     public ItemElement(Builder builder) {
-        super(builder.id, builder.width, builder.height, builder.anchor, builder.x, builder.y);
+        super(builder.id, builder.width, builder.height, builder.anchor, builder.x, builder.y, builder.scale);
         this.item = builder.item;
         this.originalItem = builder.item;
         this.elementAnchor = builder.elementAnchor;

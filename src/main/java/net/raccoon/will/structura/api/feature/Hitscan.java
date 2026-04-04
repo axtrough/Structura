@@ -34,8 +34,6 @@ public class Hitscan {
         Vec3 eyePos = player.getEyePosition(1f);
         Vec3 lookVec = player.getLookAngle();
         Vec3 reachPos = eyePos.add(lookVec.scale(maxDistance));
-
-        //raytrace block first
         BlockHitResult blockHit = level.clip(new ClipContext(
                 eyePos,
                 reachPos,
@@ -43,24 +41,34 @@ public class Hitscan {
                 ClipContext.Fluid.NONE,
                 player
         ));
-        double blockDist = blockHit.getType() == HitResult.Type.MISS ? Double.MAX_VALUE
+
+        if (blockHit.getType() == HitResult.Type.MISS) {
+            blockHit = null;
+        }
+
+        double blockDist = blockHit == null ? Double.MAX_VALUE
                 : blockHit.getLocation().distanceTo(eyePos);
 
-        //check entities
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
                 level,
                 player,
                 eyePos,
                 reachPos,
-                player.getBoundingBox().expandTowards(lookVec.scale(maxDistance)).inflate(1.0),
+                player.getBoundingBox().expandTowards(lookVec.scale(maxDistance)).inflate(0.25),
                 e -> e instanceof LivingEntity && e != player,
-                1f
+                0.1f
         );
+
         double entityDist = entityHit == null ? Double.MAX_VALUE : entityHit.getLocation().distanceTo(eyePos);
 
-        //returns closest hit
-        if (entityDist < blockDist) return HitscanResult.entity(entityHit);
-        if (blockDist < Double.MAX_VALUE) return HitscanResult.block(blockHit);
+        if (blockDist <= entityDist && blockHit != null) {
+            return HitscanResult.block(blockHit);
+        }
+
+        if (entityHit != null) {
+            return HitscanResult.entity(entityHit);
+        }
+
         return HitscanResult.miss();
     }
 }

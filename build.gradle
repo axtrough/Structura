@@ -11,6 +11,11 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 base {
@@ -92,6 +97,11 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
+    runtimeOnly("maven.modrinth:sodium:${sodium_version}")
+    runtimeOnly("maven.modrinth:immediatelyfast:${immfast_version}")
+    runtimeOnly("maven.modrinth:lithium:${lithium_version}")
+    runtimeOnly("maven.modrinth:better-modlist:${modlist_version}")
+    runtimeOnly("maven.modrinth:brick-furnace:mDs1svVc")
 
 }
 

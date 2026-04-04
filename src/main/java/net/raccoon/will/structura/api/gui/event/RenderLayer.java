@@ -30,6 +30,10 @@ public final class RenderLayer {
         int screenWidth = window.getGuiScaledWidth();
         int screenHeight = window.getGuiScaledHeight();
 
+        double guiScale = window.getGuiScale();
+        int mouseX = (int)(mc.mouseHandler.xpos() / guiScale);
+        int mouseY = (int)(mc.mouseHandler.ypos() / guiScale);
+
         long now = System.nanoTime();
         float deltaSeconds = (now - lastFrameTime) / 1_000_000_000f;
         lastFrameTime = now;
@@ -37,7 +41,7 @@ public final class RenderLayer {
         deltaSeconds = Math.min(deltaSeconds, 0.05f);
 
         HudManager.update(player);
-        HudManager.render(graphics, screenWidth, screenHeight);
+        HudManager.render(graphics, mouseX, mouseY, screenWidth, screenHeight);
     }
 }
 

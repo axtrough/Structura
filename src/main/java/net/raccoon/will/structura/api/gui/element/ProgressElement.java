@@ -18,7 +18,7 @@ public class ProgressElement extends AbstractElement {
     private float progress;
 
     public ProgressElement(Builder builder) {
-        super(builder.id, builder.width, builder.height, builder.anchor, builder.x, builder.y);
+        super(builder.id, builder.width, builder.height, builder.anchor, builder.x, builder.y, builder.scale);
         this.texture = builder.texture;
         this.texWidth = builder.texWidth;
         this.texHeight = builder.texHeight;
@@ -27,34 +27,6 @@ public class ProgressElement extends AbstractElement {
         this.emptyX = builder.emptyX;
         this.emptyY = builder.emptyY;
         this.elementAnchor = builder.elementAnchor;
-    }
-
-    /** <P>
-     * Creates a progress bar GUI element rendered from a single texture.
-     *</P>
-     *
-     * <p>
-     * Texture coordinates ({@code emptyX}, {@code emptyY}, {@code fullX}, {@code fullY})
-     * refer to the <b>top-left corner</b> of each bar region within the texture.
-     * </p>
-     *
-     * @param texture the texture containing both bars (empty and full)
-     * @param texWidth  the total width of the texture
-     * @param texHeight the total height of the texture
-     * @param barWidth  the width of the progress bar
-     * @param barHeight the height of the progress bar
-     */
-
-    public ProgressElement(String id, Identifier texture, int texWidth, int texHeight, int barWidth, int barHeight,
-                           int emptyX, int emptyY, int fullX, int fullY, Anchor anchor, int offsetX, int offsetY) {
-        super(id, barWidth, barHeight, anchor, offsetX, offsetY);
-        this.texture = texture;
-        this.texWidth = texWidth;
-        this.texHeight = texHeight;
-        this.emptyX = emptyX;
-        this.emptyY = emptyY;
-        this.fullX = fullX;
-        this.fullY = fullY;
     }
 
     public void setProgress(float progress) {
