@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
-import net.raccoon.will.structura.api.util.ColorUitl;
 
 /**
  * Pretty self-explanatory.
@@ -105,12 +104,12 @@ public class TextElement extends AbstractElement {
         }
 
         public Builder color(int R, int G, int B) {
-            this.color = ColorUitl.rgb(R, G, B);
+            this.color = ARGB.color(R, G, B);
             return this;
         }
 
         public Builder color(int A, int R, int G, int B) {
-            this.color = ColorUitl.argb(A, R, G, B);
+            this.color = ARGB.color(A, R, G, B);
             return this;
         }
 

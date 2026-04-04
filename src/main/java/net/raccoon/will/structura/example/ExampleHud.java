@@ -56,7 +56,7 @@ public class ExampleHud extends BaseHud {
 
         textElement2 = addElement(TextElement.builder("mod_element")
                 .text(Component.literal("This is a text element"))
-                .color(125, 125, 125) //use either rgb, hex or argb
+                .color(125, 125, 125) //use either rgb, hex or argb (if you use hex, make sure to include alpha in the color)
                 .shadow(true)
                 .offset(8, -36)
                 .scale(1.25F)
