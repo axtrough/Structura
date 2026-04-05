@@ -1,5 +1,6 @@
 package net.raccoon.will.structura.api.gui.element;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -20,6 +21,9 @@ public abstract class AbstractElement {
     protected boolean visible = true;
     protected boolean active = true;
     protected boolean isHovered;
+
+    private double virtualMouseX = 0;
+    private double virtualMouseY = 0;
 
     protected Anchor anchor;
     protected ElementAnchor elementAnchor = ElementAnchor.TOP_LEFT;
@@ -55,10 +59,15 @@ public abstract class AbstractElement {
         int x = getRenderX(screenWidth);
         int y = getRenderY(screenHeight);
 
-        this.isHovered = isActive()
-                && mouseX >= x && mouseY >= y
-                && mouseX < x + (int)(width * initialScale)
-                && mouseY < y + (int)(height * initialScale);
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.mouseHandler.isMouseGrabbed()) {
+            this.isHovered = false;
+        } else {
+            this.isHovered = isActive()
+                    && mouseX >= x && mouseY >= y
+                    && mouseX < x + (int)(width * initialScale)
+                    && mouseY < y + (int)(height * initialScale);
+        }
 
         if (isHovered && !wasHovered) onHoverStart();
         else if (!isHovered && wasHovered) onHoverEnd();
@@ -210,7 +219,7 @@ public abstract class AbstractElement {
     }
 
     public void updateSize() {}
-    public void update() {
+    public void update(float deltaTime) {
         updateSize();
     }
 

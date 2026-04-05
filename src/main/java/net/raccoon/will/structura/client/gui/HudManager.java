@@ -21,9 +21,9 @@ public class HudManager {
     }
 
     //updates the hud for the player
-    public static void update(Player player) {
+    public static void update(Player player, float deltaTime) {
         for (BaseHud hud : HUDS) {
-            hud.update(player);
+            hud.update(player, deltaTime);
         }
     }
 

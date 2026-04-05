@@ -55,9 +55,9 @@ public abstract class BaseHud {
         }
     }
 
-    public final void update(Player player) {
+    public final void update(Player player, float deltaTime) {
         for (AbstractElement element : elements) {
-            element.update();
+            element.update(deltaTime);
         }
 
         onUpdate(player);

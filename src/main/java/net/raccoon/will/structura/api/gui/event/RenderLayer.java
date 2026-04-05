@@ -1,6 +1,7 @@
 package net.raccoon.will.structura.api.gui.event;
 
 import com.mojang.blaze3d.platform.Window;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
@@ -14,33 +15,26 @@ import net.raccoon.will.structura.client.gui.HudManager;
 @EventBusSubscriber(modid = Structura.MODID, value = Dist.CLIENT)
 public final class RenderLayer {
 
-    private static long lastFrameTime = System.nanoTime();
-
-    private RenderLayer() {}
-
     @SubscribeEvent
     public static void onRender(RenderGuiEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (mc.player == null) return;
 
-        Window window = mc.getWindow();
-        GuiGraphicsExtractor graphics = event.getGuiGraphics();
+        DeltaTracker delta = event.getPartialTick();
+        float deltaTime = delta.getRealtimeDeltaTicks() / 20.0f;
 
+        Window window = mc.getWindow();
         int screenWidth = window.getGuiScaledWidth();
         int screenHeight = window.getGuiScaledHeight();
+        GuiGraphicsExtractor graphics = event.getGuiGraphics();
 
         double guiScale = window.getGuiScale();
         int mouseX = (int)(mc.mouseHandler.xpos() / guiScale);
         int mouseY = (int)(mc.mouseHandler.ypos() / guiScale);
 
-        long now = System.nanoTime();
-        float deltaSeconds = (now - lastFrameTime) / 1_000_000_000f;
-        lastFrameTime = now;
 
-        deltaSeconds = Math.min(deltaSeconds, 0.05f);
-
-        HudManager.update(player);
+        HudManager.update(player, deltaTime);
         HudManager.render(graphics, mouseX, mouseY, screenWidth, screenHeight);
     }
 }
