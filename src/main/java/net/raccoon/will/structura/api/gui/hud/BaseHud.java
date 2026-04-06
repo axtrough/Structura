@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.raccoon.will.structura.api.gui.animation.ElementAnimations;
 import net.raccoon.will.structura.api.gui.element.AbstractElement;
 import net.raccoon.will.structura.client.gui.HudManager;
 
@@ -14,13 +15,16 @@ import java.util.List;
 public abstract class BaseHud {
     private final List<AbstractElement> elements = new ArrayList<>();
     private final String id;
+    private final ElementAnimations elementAnimations;
 
     protected BaseHud(String id) {
         this.id = id;
+        this.elementAnimations = new ElementAnimations();
         init();
     };
 
     public String getId() {
+
         return id;
     }
 
@@ -48,6 +52,10 @@ public abstract class BaseHud {
         }
     }
 
+    protected ElementAnimations animation() {
+        return elementAnimations;
+    }
+
     protected void showHud() {
         if (this.elements.isEmpty()) return;
         for (AbstractElement element : elements) {
@@ -59,7 +67,7 @@ public abstract class BaseHud {
         for (AbstractElement element : elements) {
             element.update(deltaTime);
         }
-
+        elementAnimations.tick(deltaTime);
         onUpdate(player);
     }
 

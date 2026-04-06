@@ -16,7 +16,7 @@ import net.raccoon.will.structura.client.gui.HudManager;
 public final class RenderLayer {
 
     @SubscribeEvent
-    public static void onRender(RenderGuiEvent.Pre event) {
+    public static void onRender(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (mc.player == null) return;

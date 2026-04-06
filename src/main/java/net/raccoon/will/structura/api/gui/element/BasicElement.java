@@ -66,9 +66,9 @@ public class BasicElement extends AbstractElement {
             return this;
         }
 
-        public Builder texSize(int texWidth, int texHeight) {
-            this.texWidth = texWidth;
-            this.texHeight = texHeight;
+        public Builder textureSize(int textureWidth, int textureHeight) {
+            this.texWidth = textureWidth;
+            this.texHeight = textureHeight;
             return this;
         }
 

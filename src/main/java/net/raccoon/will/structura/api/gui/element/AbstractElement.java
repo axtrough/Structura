@@ -21,9 +21,7 @@ public abstract class AbstractElement {
     protected boolean visible = true;
     protected boolean active = true;
     protected boolean isHovered;
-
-    private double virtualMouseX = 0;
-    private double virtualMouseY = 0;
+    protected boolean wasHovered = this.isHovered;
 
     protected Anchor anchor;
     protected ElementAnchor elementAnchor = ElementAnchor.TOP_LEFT;
@@ -52,57 +50,62 @@ public abstract class AbstractElement {
     protected abstract void draw(GuiGraphicsExtractor graphics);
 
     public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int screenWidth, int screenHeight) {
-        if (alpha == 0.0F) visible = false;
+        updateVisibility();
         if (!visible) return;
-        boolean wasHovered = this.isHovered;
 
         int x = getRenderX(screenWidth);
         int y = getRenderY(screenHeight);
 
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.mouseHandler.isMouseGrabbed()) {
-            this.isHovered = false;
-        } else {
-            this.isHovered = isActive()
-                    && mouseX >= x && mouseY >= y
-                    && mouseX < x + (int)(width * initialScale)
-                    && mouseY < y + (int)(height * initialScale);
-        }
-
-        if (isHovered && !wasHovered) onHoverStart();
-        else if (!isHovered && wasHovered) onHoverEnd();
-        if (isHovered) onHover();
+        updateHover(mouseX, mouseY, x, y);
+        handleHoverEvents();
 
         graphics.pose().pushMatrix();
+        applyTransforms(graphics, x, y);
 
-        //holy spaghetti code
-        float pivotX = switch (elementAnchor) {
-            case TOP_LEFT, CENTER_LEFT, BOTTOM_LEFT -> 0;
-            case TOP_CENTER, CENTER, BOTTOM_CENTER -> width / 2f;
-            case TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT -> (float) width;
-        };
+        draw(graphics);
+        renderDebug(graphics);
 
-        float pivotY = switch (elementAnchor) {
-            case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> 0;
-            case CENTER_LEFT, CENTER, CENTER_RIGHT -> height / 2f;
-            case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> (float) height;
-        };
+        graphics.pose().popMatrix();
+    }
+
+    private void renderDebug(GuiGraphicsExtractor graphics) {
+        if (!debug) return;
+
+        graphics.fill(0, 0, width, height, 0x40FF0000);
+        graphics.outline(0, 0, width, height, 0xFFFF0000);
+    }
+
+    private void applyTransforms(GuiGraphicsExtractor graphics, int x, int y) {
+        float pivotX = getPivotX();
+        float pivotY = getPivotY();
 
         graphics.pose().translate(x, y);
         graphics.pose().translate(pivotX * initialScale, pivotY * initialScale);
         graphics.pose().scale(scale / initialScale, scale / initialScale);
         graphics.pose().translate(-pivotX * initialScale, -pivotY * initialScale);
         graphics.pose().scale(initialScale, initialScale);
+    }
 
-        draw(graphics);
+    private boolean isInside(int mouseX, int mouseY, int x, int y) {
+        int scaledWidth = (int) (width * initialScale);
+        int scaledHeight = (int) (height * initialScale);
 
-        if (debug) {
-            graphics.fill(0, 0, width, height, 0x40FF0000);
-            graphics.outline(0, 0, width, height, 0xFFFF0000);
+        return mouseX >= x && mouseY >= y
+                && mouseX < x + scaledWidth
+                && mouseY < y + scaledHeight;
+    }
+
+
+    private void updateHover(int mouseX, int mouseY, int x, int y) {
+        if (Minecraft.getInstance().mouseHandler.isMouseGrabbed()) {
+            isHovered = false;
+            return;
         }
 
-        graphics.pose().popMatrix();
+        isHovered = isActive() && isInside(mouseX, mouseY, x, y);
     }
+
+
 
     public boolean isActive() {
         return this.visible && this.active;
@@ -144,6 +147,8 @@ public abstract class AbstractElement {
     public boolean isVisible () {
         return visible;
     }
+
+
 
     public void setScale(float scale) {
         this.scale = scale;
@@ -219,12 +224,24 @@ public abstract class AbstractElement {
     }
 
     public void updateSize() {}
+
     public void update(float deltaTime) {
         updateSize();
     }
 
+    private void updateVisibility() {
+        if (alpha == 0.0F) visible = false;
+    }
+
     public boolean isHovered() {
         return isHovered;
+    }
+
+    private void handleHoverEvents() {
+        if (isHovered && !wasHovered) onHoverStart();
+        else if (!isHovered && wasHovered) onHoverEnd();
+
+        if (isHovered) onHover();
     }
 
     public static abstract class Builder<T extends Builder<T>> {
@@ -301,5 +318,21 @@ public abstract class AbstractElement {
         };
 
         return anchorY - adjustmentY;
+    }
+
+    private float getPivotX() {
+        return switch (elementAnchor) {
+            case TOP_LEFT, CENTER_LEFT, BOTTOM_LEFT -> 0;
+            case TOP_CENTER, CENTER, BOTTOM_CENTER -> width / 2f;
+            case TOP_RIGHT, CENTER_RIGHT, BOTTOM_RIGHT -> (float) width;
+        };
+    }
+
+    private float getPivotY() {
+        return switch (elementAnchor) {
+            case TOP_LEFT, TOP_CENTER, TOP_RIGHT -> 0;
+            case CENTER_LEFT, CENTER, CENTER_RIGHT -> height / 2f;
+            case BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT -> (float) height;
+        };
     }
 }

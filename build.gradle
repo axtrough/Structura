@@ -100,9 +100,6 @@ dependencies {
     runtimeOnly("maven.modrinth:sodium:${sodium_version}")
     runtimeOnly("maven.modrinth:immediatelyfast:${immfast_version}")
     runtimeOnly("maven.modrinth:lithium:${lithium_version}")
-    runtimeOnly("maven.modrinth:better-modlist:${modlist_version}")
-    runtimeOnly("maven.modrinth:brick-furnace:mDs1svVc")
-
 }
 
 
