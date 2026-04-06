@@ -73,35 +73,18 @@ public class ExampleHud extends BaseHud {
                 .anchor(Anchor.CENTER)
                 .elementAnchor(ElementAnchor.TOP_CENTER)
                 .build());
-
-
-
-//        progressElement = addElement(ProgressElement.builder("progress_element")
-//                .texSize(128, 128)
-//                .emptyBar(1, 1)
-//                .fullBar(1, 1)
-//                .anchor(Anchor.CENTER_RIGHT)
-//                .build());
-
         }
 
     @Override
     protected void onUpdate(Player player) {
         whatBlock(player);
 
-//        for (AbstractElement element : this.getElements()) {
-//            new Actions().scaling(0.02F, element);
-//        };
+        animation().scale(textElement, 2, 10, textElement.isHovered());
+        animation().scale(textElement2, 2, 10, textElement2.isHovered());
+        animation().scale(itemElement, 2, 10, itemElement.isHovered());
 
-        animation().scaling(textElement, 2, 10);
-        animation().scaling(textElement2, 2, 10);
-        animation().scaling(animatedElement, 2, 5);
-
-        if (basicElement.isHovered()) {
-            animation().fadeIn(basicElement, 10);
-        } else {
-            animation().fadeOut(basicElement, 10);
-        }
+        animation().scale(animatedElement, 2, 10, animatedElement.isHovered());
+        animation().fade(basicElement, 0.0f, 1.0f, 10,basicElement.isHovered());
 
     }
 

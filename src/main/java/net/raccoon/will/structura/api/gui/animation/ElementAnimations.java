@@ -13,28 +13,17 @@ public class ElementAnimations {
         return 1f - (float) Math.pow(1f - 0.99f, deltaTime / (ticks / 20f));
     }
 
-    //scales up when hover, scales down when not hover.
-    public void scaling(AbstractElement element, float scale, float ticks) {
+    public void scale(AbstractElement element, float scale, float ticks, boolean shouldScale) {
         float current = element.getScale();
-        float target = element.isHovered() ? element.getInitialScale() * scale : element.getInitialScale();
+        float target = shouldScale ? element.getInitialScale() * scale : element.getInitialScale();
         float time = deltaSpeed(ticks, deltaTime);
         element.setScale(current + (target - current) * time);
     }
 
-    //mostly just helper for fadeIn/fadeOut but can be use separately.
-    private void fadeTo(AbstractElement element, float ticks, float target) {
+    public void fade(AbstractElement element, float baseAlpha, float targetAlpha, float ticks, boolean shouldFade) {
         float current = element.getAlpha();
+        float target = shouldFade ? targetAlpha : baseAlpha;
         float time = deltaSpeed(ticks, deltaTime);
         element.setAlpha(current + (target - current) * time);
-    }
-
-    //fades in duhh
-    public void fadeIn(AbstractElement element, float ticks) {
-        fadeTo(element, ticks, 1.0f);
-    }
-
-    //fades out duh
-    public void fadeOut(AbstractElement element, float ticks) {
-        fadeTo(element, ticks, 0.0f);
     }
 }
